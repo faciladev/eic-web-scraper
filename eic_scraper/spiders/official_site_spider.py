@@ -384,13 +384,13 @@ class  OfficialSiteSpider(scrapy.Spider):
             content = None
             if header_index == 0:
                 content = remove_empty_list_item(header.xpath('.//following-sibling::ul[1]/li/text() | .//following-sibling::ul[2]/li/text()').getall())
-                key = header.xpath('.//descendant-or-self::*/text()').get().strip()
-                indicator_content.update({key: {'content': content}})
-            if header_index == 4:
+            elif header_index == 4:
                 content = remove_empty_list_item(header.xpath('.//following-sibling::ul[1]/li/text()').getall())
-                key = header.xpath('.//descendant-or-self::*/text()').get().strip()
-                indicator_content.update({key: {'content': content}})
-            
+            else:
+                continue
+
+            key = header.xpath('.//descendant-or-self::*/text()').get().strip()
+            indicator_content.update({key: {'content': content}})
         item = CountryProfileItem()
         item['name'] = response.css('.article-title::text').get().strip()
         item['content'] = indicator_content
