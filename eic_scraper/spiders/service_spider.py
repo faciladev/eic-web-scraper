@@ -6,7 +6,7 @@ from eic_scraper.items import ServiceItem
 from eic_scraper.utils import remove_empty_list_item
 
 class  ServiceSpider(scrapy.Spider):
-    name = "services_site"
+    name = "service_site"
     allowed_domains = ['invest-ethiopia.com']
 
     def __init__(self, *args, **kwargs):
