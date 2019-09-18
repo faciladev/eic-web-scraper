@@ -1,5 +1,4 @@
 import scrapy
-# from scrapy_splash import SplashRequest
 
 from eic_scraper.items import CountryProfileItem
 from eic_scraper.utils import remove_empty_list_item
@@ -31,31 +30,28 @@ class  IGuideSpider(scrapy.Spider):
         for index_profile, profile in enumerate(profiles):
             profile_id = profile.xpath('.//@id').get().strip()
             section_link_divs = None
+            menu_id = None
 
             if profile_id == 'tabGetStarted':
                 menu_id = 'menuTab_GetStarted'
-                section_link_divs = profile.xpath(f'.//div[@id="{menu_id}"]').css('.accordion-group')
             elif profile_id == 'tabLabour':
                 menu_id = 'menuTab_Labour'
-                section_link_divs = profile.xpath(f'.//div[@id="{menu_id}"]').css('.accordion-group')
             elif profile_id == 'tabProductionFactors':
                 menu_id = 'menuTab_ProductionFactors'
-                section_link_divs = profile.xpath(f'.//div[@id="{menu_id}"]').css('.accordion-group')
             elif profile_id == 'tabLand':
                 menu_id = 'menuTab_Land'
-                section_link_divs = profile.xpath(f'.//div[@id="{menu_id}"]').css('.accordion-group')
             elif profile_id == 'tabTaxes':
                 menu_id = 'menuTab_Taxes'
-                section_link_divs = profile.xpath(f'.//div[@id="{menu_id}"]').css('.accordion-group')
             elif profile_id == 'tabProtectYourInvestment':
                 menu_id = 'menuTab_ProtectYourInvestment'
-                section_link_divs = profile.xpath(f'.//div[@id="{menu_id}"]').css('.accordion-group')
             elif profile_id == 'tabHome':
                 menu_id = 'menuTab_Home'
-                section_link_divs = profile.xpath(f'.//div[@id="{menu_id}"]').css('.accordion-group')
+            elif profile_id == 'tabGrowthSectorsAndOpportunities':
+                menu_id = 'menuTab_GrowthSectorsAndOpportunities'
             else:
                 continue
-
+            
+            section_link_divs = profile.xpath(f'.//div[@id="{menu_id}"]').css('.accordion-group')
             yield parse_country_profile(response, profile_id, section_link_divs)
 
 
