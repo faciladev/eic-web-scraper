@@ -1,7 +1,7 @@
 import scrapy
 from scrapy_splash import SplashRequest
 
-from eic_scraper.items import NewsEventItem, IncentiveItem, SectorItem
+from eic_scraper.items import NewsEventItem, IncentiveItem, SectorItem, CountryProfileItem
 from eic_scraper.utils import remove_empty_list_item
 
 class  OfficialSiteSpider(scrapy.Spider):
@@ -64,11 +64,17 @@ class  OfficialSiteSpider(scrapy.Spider):
             }
         ]
 
+        self.ECONOMIC_INDICATOR_MAP = {
+            'url': 'http://www.investethiopia.gov.et/index.php/why-ethiopia/economic-indicators.html',
+            'initial_parser': self.parse_economic_indicator
+        }
+
     def start_requests(self):
         item_maps = [
             # self.NEWS_EVENT_MAP,
             # self.INCENTIVE_MAP,
-            self.SECTOR_MAP
+            # self.SECTOR_MAP,
+            self.ECONOMIC_INDICATOR_MAP
         ]
         for item_map in item_maps:
             if type(item_map) is list:
@@ -367,6 +373,27 @@ class  OfficialSiteSpider(scrapy.Spider):
         item['name'] = response.css('.article-title::text').get().strip()
         item['url'] = response.url
         item['content'] = sector_content
+
+        yield item
+
+    def parse_economic_indicator(self, response):
+        indicator_content = {}
+        section_headers = response.css('.article-content').xpath('.//p/strong/parent::p')
+        
+        for header_index, header in enumerate(section_headers):
+            content = None
+            if header_index == 0:
+                content = remove_empty_list_item(header.xpath('.//following-sibling::ul[1]/li/text() | .//following-sibling::ul[2]/li/text()').getall())
+                key = header.xpath('.//descendant-or-self::*/text()').get().strip()
+                indicator_content.update({key: {'content': content}})
+            if header_index == 4:
+                content = remove_empty_list_item(header.xpath('.//following-sibling::ul[1]/li/text()').getall())
+                key = header.xpath('.//descendant-or-self::*/text()').get().strip()
+                indicator_content.update({key: {'content': content}})
+            
+        item = CountryProfileItem()
+        item['name'] = response.css('.article-title::text').get().strip()
+        item['content'] = indicator_content
 
         yield item
 
