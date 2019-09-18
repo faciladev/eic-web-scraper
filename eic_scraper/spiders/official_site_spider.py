@@ -4,7 +4,7 @@ from scrapy_splash import SplashRequest
 from eic_scraper.items import NewsEventItem, IncentiveItem, SectorItem
 from eic_scraper.utils import remove_empty_list_item
 
-class  NewsEventSpider(scrapy.Spider):
+class  OfficialSiteSpider(scrapy.Spider):
     name = "official_site"
     allowed_domains = ['investethiopia.gov.et']
 
