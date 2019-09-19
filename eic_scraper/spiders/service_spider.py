@@ -1,6 +1,5 @@
 import scrapy
 import json
-# from scrapy_splash import SplashRequest
 
 from eic_scraper.items import ServiceItem
 from eic_scraper.utils import remove_empty_list_item
