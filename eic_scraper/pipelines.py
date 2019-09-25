@@ -1,6 +1,6 @@
 from sqlalchemy.orm import sessionmaker
-from eic_scraper.models import NewsEventModel, IncentiveModel, SectorModel, CountryProfileModel, ServiceModel, db_connect, create_tables
-from eic_scraper.items import NewsEventItem, IncentiveItem, SectorItem, CountryProfileItem, ServiceItem
+from eic_scraper.models import NewsEventModel, IncentiveModel, SectorModel, CountryProfileModel, ChinesePageModel,ServiceModel, db_connect, create_tables
+from eic_scraper.items import NewsEventItem, IncentiveItem, SectorItem, CountryProfileItem, ServiceItem, ChinesePageItem
 
 class StoreInDbPipeline(object):
 
@@ -27,6 +27,8 @@ class StoreInDbPipeline(object):
             model_instance = CountryProfileModel(**item)
         elif isinstance(item, ServiceItem):
             model_instance = ServiceModel(**item)
+        elif isinstance(item, ChinesePageItem):
+            model_instance = ChinesePageModel(**item)
 
         try:
             session.add(model_instance)

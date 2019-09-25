@@ -37,3 +37,11 @@ class ServiceItem(scrapy.Item):
     DisplayNameEnglish = scrapy.Field()
     Abbreviation = scrapy.Field()
     Requirements = scrapy.Field()
+
+
+class ChinesePageItem(scrapy.Item):
+    name = scrapy.Field()
+    image = scrapy.Field()
+    url = scrapy.Field()
+    content = scrapy.Field()
+    excerpt = scrapy.Field()

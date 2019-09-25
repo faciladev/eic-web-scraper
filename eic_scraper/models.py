@@ -72,3 +72,13 @@ class ServiceModel(DeclarativeBase):
     DisplayNameEnglish = Column('DisplayNameEnglish', String)
     Abbreviation = Column('Abbreviation', String)
     Requirements = Column('Requirements', JSONB, nullable=True)
+
+class ChinesePageModel(DeclarativeBase):
+    __tablename__ = "chinese_page"
+
+    id = Column(Integer, primary_key=True)
+    image = Column('image', String, nullable=True)
+    name = Column('name', String)
+    url = Column('url', String)
+    excerpt = Column('excerpt', String)
+    content = Column('content', JSONB)
