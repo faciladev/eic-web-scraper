@@ -1,3 +1,6 @@
+import os
+from dotenv import load_dotenv
+load_dotenv()
 # -*- coding: utf-8 -*-
 
 # Scrapy settings for eic_scraper project
@@ -39,10 +42,10 @@ ROBOTSTXT_OBEY = True
 #TELNETCONSOLE_ENABLED = False
 
 # Override the default request headers:
-#DEFAULT_REQUEST_HEADERS = {
+# DEFAULT_REQUEST_HEADERS = {
 #   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
 #   'Accept-Language': 'en',
-#}
+# }
 
 
 SPIDER_MIDDLEWARES = {
@@ -60,14 +63,14 @@ DUPEFILTER_CLASS = 'scrapy_splash.SplashAwareDupeFilter'
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
-#EXTENSIONS = {
+# EXTENSIONS = {
 #    'scrapy.extensions.telnet.TelnetConsole': None,
-#}
+# }
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'eic_scraper.pipelines.StoreInDbPipeline': 300,
+    'eic_scraper.pipelines.StoreInDbPipeline': 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -91,13 +94,14 @@ ITEM_PIPELINES = {
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
+
 DATABASE = {
-   'drivername': 'postgres',
-   'host': 'localhost',
-   'port': '5432',
-   'username': 'facilo',
-   'password': 'password',
-   'database': 'eic'
+    'drivername': os.getenv('DATABASE_DRIVER'),
+    'host': os.getenv('DATABASE_HOST'),
+    'port': os.getenv('DATABASE_PORT'),
+    'username': os.getenv('DATABASE_USER'),
+    'password': os.getenv('DATABASE_PASSWORD'),
+    'database': os.getenv('DATABASE_NAME')
 }
 
-SPLASH_URL = 'http://localhost:8050'
+SPLASH_URL = os.getenv('SPLASH_URL')
