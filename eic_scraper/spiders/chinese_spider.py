@@ -101,7 +101,6 @@ class ChineseSpider(scrapy.Spider):
                     1 < len(section_titles) else index
                 section_nodes = self.parse_between_nodes(
                     section_title, section_titles[next_index])
-                print('section_title = ', section_title)
                 title = section_title.xpath(
                     './/descendant-or-self::*/text()').get().strip()
                 content.update({title: section_nodes})
@@ -127,14 +126,62 @@ class ChineseSpider(scrapy.Spider):
             if node.get() == end.get():
                 break
 
+            # Exclude lists and tables
             node_content = node.xpath(
-                './/descendant-or-self::*/text()').getall()
+                './/descendant-or-self::*[not(ancestor::ul)][not(ancestor::ol)][not(ancestor::table)]/text()').getall()
+
             node_content = escape_wordpress_vc(node_content)
 
             if len(node_content) > 0:
                 between_nodes.append(node_content)
 
+            section_lists = node.xpath(
+                './/descendant-or-self::ul | .//descendant-or-self::ol')
+
+            lists = extract_lists(section_lists)
+
+            if len(lists) > 0:
+                between_nodes.append({'lists': lists})
+
+            section_tables = node.xpath('.//descendant-or-self::table')
+
+            tables = extract_tables(section_tables)
+
+            if len(tables) > 0:
+                between_nodes.append({'tables': tables})
+
         return between_nodes
+
+
+def extract_lists(section_lists):
+    lists = []
+    for section_list in section_lists:
+        list_content = remove_empty_list_item(
+            section_list.xpath('.//li/descendant-or-self::*/text()').getall())
+        if len(list_content) > 0:
+            lists.append({'list': list_content})
+
+    return lists
+
+
+def extract_tables(section_tables):
+    tables = []
+    for section_table in section_tables:
+        table = {'headers': [], 'rows': []}
+        headers = section_table.xpath('.//th')
+        for header in headers:
+            table['headers'].append(
+                header.xpath('.//descendant-or-self::*/text()').get(default=""))
+
+        rows = section_table.xpath('.//tbody/tr')
+        for row in rows:
+            row_content = remove_empty_list_item(
+                row.xpath('.//td/descendant-or-self::*/text()').getall())
+            table['rows'].append(row_content)
+
+        tables.append({'table': table})
+
+    return tables
 
 
 def escape_wordpress_vc(node_content):
