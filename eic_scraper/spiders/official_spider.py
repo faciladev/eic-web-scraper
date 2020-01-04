@@ -72,9 +72,9 @@ class OfficialSiteSpider(scrapy.Spider):
 
     def start_requests(self):
         item_maps = [
-            # self.NEWS_EVENT_MAP,
-            # self.INCENTIVE_MAP,
-            # self.SECTOR_MAP,
+            self.NEWS_EVENT_MAP,
+            self.INCENTIVE_MAP,
+            self.SECTOR_MAP,
             self.ECONOMIC_INDICATOR_MAP
         ]
         for item_map in item_maps:
@@ -184,8 +184,9 @@ class OfficialSiteSpider(scrapy.Spider):
         section_headers = response.xpath('//h3')
         for header_index, header in enumerate(section_headers):
             content = None
+            lists = []
             if header_index == 0:
-                content = remove_empty_list_item(header.xpath(
+                lists = remove_empty_list_item(header.xpath(
                     './/following-sibling::ul[1]/li/text() | .//following-sibling::ul[2]/li/text()').getall())
             elif header_index == 4:
                 organisations = header.xpath(
@@ -200,8 +201,11 @@ class OfficialSiteSpider(scrapy.Spider):
 
                 content = organisation_address_map
             else:
-                content = remove_empty_list_item(header.xpath(
+                lists = remove_empty_list_item(header.xpath(
                     './/following-sibling::ul[1]/li/text()').getall())
+
+            if len(lists) > 0:
+                content = {'lists': [{'list': lists}]}
 
             key = header.xpath('.//text()').get().strip()
             sector_content[key] = content
@@ -224,6 +228,7 @@ class OfficialSiteSpider(scrapy.Spider):
         section_headers = response.xpath('//h3')
         for header_index, header in enumerate(section_headers):
             content = None
+            lists = []
             if header_index == 4:
                 organisations = header.xpath(
                     './/following-sibling::p/strong/parent::p')
@@ -245,8 +250,11 @@ class OfficialSiteSpider(scrapy.Spider):
 
                 content = organisation_address_map
             else:
-                content = remove_empty_list_item(header.xpath(
+                lists = remove_empty_list_item(header.xpath(
                     './/following-sibling::ul[1]/li/text()').getall())
+
+            if len(lists) > 0:
+                content = {'lists': [{'list': lists}]}
 
             key = header.xpath('.//text()').get().strip()
             sector_content[key] = content
@@ -294,15 +302,18 @@ class OfficialSiteSpider(scrapy.Spider):
                 opportunity_headers = header.xpath(
                     './/following-sibling::p/strong/parent::p')[:3]
                 for opportunity_header in opportunity_headers:
-                    opportunity = remove_empty_list_item(opportunity_header.xpath(
+                    lists = remove_empty_list_item(opportunity_header.xpath(
                         './/following-sibling::ul[1]/li/text()').getall())
                     opportunity_name = opportunity_header.xpath(
                         './/text()').get().strip()
 
+                    opportunity = {'lists': [{'list': lists}]}
+
                     content[opportunity_name] = opportunity
             else:
-                content = remove_empty_list_item(header.xpath(
+                lists = remove_empty_list_item(header.xpath(
                     './/following-sibling::ul[1]/li/text()').getall())
+                content = {'lists': [{'list': lists}]}
 
             key = header.xpath('.//text()').get().strip()
             sector_content[key] = content
@@ -322,7 +333,7 @@ class OfficialSiteSpider(scrapy.Spider):
         item = SectorItem()
         item['name'] = response.css('.article-title::text').get().strip()
         item['url'] = response.url
-        item['content'] = sector_content
+        item['content'] = {'lists': [{'list': sector_content}]}
 
         yield item
 
@@ -333,7 +344,7 @@ class OfficialSiteSpider(scrapy.Spider):
         item = SectorItem()
         item['name'] = response.css('.article-title::text').get().strip()
         item['url'] = response.url
-        item['content'] = sector_content
+        item['content'] = {'lists': [{'list': sector_content}]}
 
         yield item
 
@@ -344,7 +355,7 @@ class OfficialSiteSpider(scrapy.Spider):
         item = SectorItem()
         item['name'] = response.css('.article-title::text').get().strip()
         item['url'] = response.url
-        item['content'] = sector_content
+        item['content'] = {'lists': [{'list': sector_content}]}
 
         yield item
 
@@ -353,12 +364,15 @@ class OfficialSiteSpider(scrapy.Spider):
         section_headers = response.xpath('//h3')
         for header_index, header in enumerate(section_headers):
             content = None
+            lists = []
             if header_index == 0:
-                content = remove_empty_list_item(header.xpath(
+                lists = remove_empty_list_item(header.xpath(
                     './/following-sibling::ul[1]/li/text() | .//following-sibling::ul[2]/li/text() | .//following-sibling::ul[3]/li/text()').getall())
             else:
-                content = remove_empty_list_item(header.xpath(
+                lists = remove_empty_list_item(header.xpath(
                     './/following-sibling::ul[1]/li/text()').getall())
+            if len(lists) > 0:
+                content = {'lists': [{'list': lists}]}
 
             key = header.xpath('.//text()').get().strip()
             sector_content[key] = content
@@ -375,12 +389,16 @@ class OfficialSiteSpider(scrapy.Spider):
         section_headers = response.xpath('//h3')
         for header_index, header in enumerate(section_headers):
             content = None
+            lists = []
             if header_index == 0:
-                content = remove_empty_list_item(header.xpath(
+                lists = remove_empty_list_item(header.xpath(
                     './/following-sibling::p[1]/text()').getall())
             else:
-                content = remove_empty_list_item(header.xpath(
+                lists = remove_empty_list_item(header.xpath(
                     './/following-sibling::ul[1]/li/text()').getall())
+
+            if len(lists) > 0:
+                content = {'lists': [{'list': lists}]}
 
             key = header.xpath('.//text()').get().strip()
             sector_content[key] = content
@@ -398,12 +416,16 @@ class OfficialSiteSpider(scrapy.Spider):
             '.article-content').xpath('.//p/strong/parent::p')
         for header_index, header in enumerate(section_headers):
             content = None
+            lists = []
             if header_index == 0:
-                content = remove_empty_list_item(header.xpath(
+                lists = remove_empty_list_item(header.xpath(
                     './/following-sibling::p/text()').getall())
             else:
-                content = remove_empty_list_item(header.xpath(
+                lists = remove_empty_list_item(header.xpath(
                     './/following-sibling::ul[1]/li/text()').getall())
+
+            if len(lists) > 0:
+                content = {'lists': [{'list': lists}]}
 
             key = header.xpath('.//text()').get().strip()
             sector_content[key] = content
@@ -420,10 +442,11 @@ class OfficialSiteSpider(scrapy.Spider):
         section_headers = response.css(
             '.article-content').xpath('.//p/strong/parent::p')
         for header_index, header in enumerate(section_headers):
-            content = remove_empty_list_item(header.xpath(
+            lists = remove_empty_list_item(header.xpath(
                 './/following-sibling::ul[1]/li/text()').getall())
             key = header.xpath('.//text()').get().strip()
-            sector_content[key] = content
+
+            sector_content[key] = {'lists': [{'list': lists}]}
 
         item = SectorItem()
         item['name'] = response.css('.article-title::text').get().strip()
