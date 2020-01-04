@@ -72,9 +72,9 @@ class OfficialSiteSpider(scrapy.Spider):
 
     def start_requests(self):
         item_maps = [
-            self.NEWS_EVENT_MAP,
-            self.INCENTIVE_MAP,
-            self.SECTOR_MAP,
+            # self.NEWS_EVENT_MAP,
+            # self.INCENTIVE_MAP,
+            # self.SECTOR_MAP,
             self.ECONOMIC_INDICATOR_MAP
         ]
         for item_map in item_maps:
@@ -439,14 +439,18 @@ class OfficialSiteSpider(scrapy.Spider):
 
         for header_index, header in enumerate(section_headers):
             content = None
+            lists = []
             if header_index == 0:
-                content = remove_empty_list_item(header.xpath(
+                lists = remove_empty_list_item(header.xpath(
                     './/following-sibling::ul[1]/li/text() | .//following-sibling::ul[2]/li/text()').getall())
             elif header_index == 4:
-                content = remove_empty_list_item(header.xpath(
+                lists = remove_empty_list_item(header.xpath(
                     './/following-sibling::ul[1]/li/text()').getall())
             else:
                 continue
+
+            if len(lists) > 0:
+                content = {'lists': [{'list': lists}]}
 
             key = header.xpath('.//descendant-or-self::*/text()').get().strip()
             indicator_content.update({key: {'content': content}})
@@ -470,3 +474,14 @@ def parse_sector_quotes(quotes_container):
             quotes.append(quote)
 
     return quotes
+
+
+def extract_lists(section_lists):
+    lists = []
+    for section_list in section_lists:
+        list_content = remove_empty_list_item(
+            section_list.xpath('.//li/descendant-or-self::*/text()').getall())
+        if len(list_content) > 0:
+            lists.append({'list': list_content})
+
+    return lists

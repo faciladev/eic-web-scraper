@@ -90,43 +90,19 @@ def parse_country_profile(response, profile_id, section_link_divs):
         section_lists = response.xpath(
             f'//div[@id="{id}"]/descendant-or-self::ul | //div[@id="{id}"]/descendant-or-self::ol')
 
-        lists = []
-        for section_list in section_lists:
-            list_content = remove_empty_list_item(
-                section_list.xpath('.//li/descendant-or-self::*/text()').getall())
-            if len(list_content) > 0:
-                lists.append({'list': list_content})
+        lists = extract_lists(section_lists)
 
         if len(lists) > 0:
             section_text.append({'lists': lists})
 
-        tables = []
         section_tables = response.xpath(
             f'//div[@id="{id}"]/descendant-or-self::table')
 
-        for section_table in section_tables:
-            table = {'headers': [], 'rows': []}
-            headers = section_table.xpath('.//th')
-            for header in headers:
-                table['headers'].append(
-                    header.xpath('.//descendant-or-self::*/text()').get(default=""))
-
-            # table['headers'].append(headers)
-            rows = section_table.xpath('.//tbody/tr')
-            for row in rows:
-                row_content = remove_empty_list_item(
-                    row.xpath('.//td/descendant-or-self::*/text()').getall())
-                table['rows'].append(row_content)
-
-            tables.append({'table': table})
+        tables = extract_tables(section_tables)
 
         if len(tables) > 0:
             section_text.append({'tables': tables})
-        # print(section_lists)
-        # print(section_tables)
-        # print(section_text)
-        # print(section_content_id)
-        # return
+
         section_contents.append(
             {'images': section_images, 'content': section_text})
 
@@ -138,3 +114,34 @@ def parse_country_profile(response, profile_id, section_link_divs):
     item['content'] = sections
 
     return item
+
+
+def extract_lists(section_lists):
+    lists = []
+    for section_list in section_lists:
+        list_content = remove_empty_list_item(
+            section_list.xpath('.//li/descendant-or-self::*/text()').getall())
+        if len(list_content) > 0:
+            lists.append({'list': list_content})
+
+    return lists
+
+
+def extract_tables(section_tables):
+    tables = []
+    for section_table in section_tables:
+        table = {'headers': [], 'rows': []}
+        headers = section_table.xpath('.//th')
+        for header in headers:
+            table['headers'].append(
+                header.xpath('.//descendant-or-self::*/text()').get(default=""))
+
+        rows = section_table.xpath('.//tbody/tr')
+        for row in rows:
+            row_content = remove_empty_list_item(
+                row.xpath('.//td/descendant-or-self::*/text()').getall())
+            table['rows'].append(row_content)
+
+        tables.append({'table': table})
+
+    return tables
