@@ -1,4 +1,6 @@
 import scrapy
+import collections
+import json
 from scrapy_splash import SplashRequest
 
 from eic_scraper.items import NewsEventItem, IncentiveItem, SectorItem, CountryProfileItem
@@ -180,7 +182,7 @@ class OfficialSiteSpider(scrapy.Spider):
             yield item
 
     def parse_sector_leather(self, response):
-        sector_content = {}
+        sector_content = collections.OrderedDict()
         section_headers = response.xpath('//h3')
         for header_index, header in enumerate(section_headers):
             content = None
@@ -219,12 +221,12 @@ class OfficialSiteSpider(scrapy.Spider):
         item['name'] = response.css('.article-title::text').get().strip()
         item['url'] = response.url
         item['image'] = response.css('img.article_image').attrib['src']
-        item['content'] = sector_content
+        item['content'] = json.dumps(sector_content)
 
         yield item
 
     def parse_sector_textile(self, response):
-        sector_content = {}
+        sector_content = collections.OrderedDict()
         section_headers = response.xpath('//h3')
         for header_index, header in enumerate(section_headers):
             content = None
@@ -268,12 +270,12 @@ class OfficialSiteSpider(scrapy.Spider):
         item['name'] = response.css('.article-title::text').get().strip()
         item['url'] = response.url
         item['image'] = response.css('img.article_image').attrib['src']
-        item['content'] = sector_content
+        item['content'] = json.dumps(sector_content)
 
         yield item
 
     def parse_sector_horticulture(self, response):
-        sector_content = {}
+        sector_content = collections.OrderedDict()
         section_headers = response.xpath(
             '//h3[1] | //h3[2] | //h3[3] | //h3[4]')
         section_headers.append(section_headers.xpath(
@@ -322,7 +324,7 @@ class OfficialSiteSpider(scrapy.Spider):
         item['name'] = response.css('.article-title::text').get().strip()
         item['url'] = response.url
         item['image'] = response.css('img.article_image').attrib['src']
-        item['content'] = sector_content
+        item['content'] = json.dumps(sector_content)
 
         yield item
 
@@ -360,7 +362,7 @@ class OfficialSiteSpider(scrapy.Spider):
         yield item
 
     def parse_sector_manufacturing(self, response):
-        sector_content = {}
+        sector_content = collections.OrderedDict()
         section_headers = response.xpath('//h3')
         for header_index, header in enumerate(section_headers):
             content = None
@@ -380,12 +382,12 @@ class OfficialSiteSpider(scrapy.Spider):
         item = SectorItem()
         item['name'] = response.css('.article-title::text').get().strip()
         item['url'] = response.url
-        item['content'] = sector_content
+        item['content'] = json.dumps(sector_content)
 
         yield item
 
     def parse_sector_pharmaceuticals(self, response):
-        sector_content = {}
+        sector_content = collections.OrderedDict()
         section_headers = response.xpath('//h3')
         for header_index, header in enumerate(section_headers):
             content = None
@@ -406,12 +408,12 @@ class OfficialSiteSpider(scrapy.Spider):
         item = SectorItem()
         item['name'] = response.css('.article-title::text').get().strip()
         item['url'] = response.url
-        item['content'] = sector_content
+        item['content'] = json.dumps(sector_content)
 
         yield item
 
     def parse_sector_power(self, response):
-        sector_content = {}
+        sector_content = collections.OrderedDict()
         section_headers = response.css(
             '.article-content').xpath('.//p/strong/parent::p')
         for header_index, header in enumerate(section_headers):
@@ -433,12 +435,12 @@ class OfficialSiteSpider(scrapy.Spider):
         item = SectorItem()
         item['name'] = response.css('.article-title::text').get().strip()
         item['url'] = response.url
-        item['content'] = sector_content
+        item['content'] = json.dumps(sector_content)
 
         yield item
 
     def parse_sector_agro_process(self, response):
-        sector_content = {}
+        sector_content = collections.OrderedDict()
         section_headers = response.css(
             '.article-content').xpath('.//p/strong/parent::p')
         for header_index, header in enumerate(section_headers):
@@ -451,12 +453,12 @@ class OfficialSiteSpider(scrapy.Spider):
         item = SectorItem()
         item['name'] = response.css('.article-title::text').get().strip()
         item['url'] = response.url
-        item['content'] = sector_content
+        item['content'] = json.dumps(sector_content)
 
         yield item
 
     def parse_economic_indicator(self, response):
-        indicator_content = {}
+        indicator_content = collections.OrderedDict()
         section_headers = response.css(
             '.article-content').xpath('.//p/strong/parent::p')
 
@@ -479,7 +481,7 @@ class OfficialSiteSpider(scrapy.Spider):
             indicator_content.update({key: {'content': content}})
         item = CountryProfileItem()
         item['name'] = response.css('.article-title::text').get().strip()
-        item['content'] = indicator_content
+        item['content'] = json.dumps(indicator_content)
 
         yield item
 

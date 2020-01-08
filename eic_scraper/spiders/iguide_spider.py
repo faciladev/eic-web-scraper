@@ -1,4 +1,6 @@
 import scrapy
+import collections
+import json
 
 from eic_scraper.items import CountryProfileItem
 from eic_scraper.utils import remove_empty_list_item
@@ -57,7 +59,8 @@ class IGuideSpider(scrapy.Spider):
 
 
 def parse_country_profile(response, profile_id, section_link_divs):
-    section_link_maps = {}
+    section_link_maps = collections.OrderedDict()
+
     for section_link_div in section_link_divs:
         section_links = section_link_div.xpath('.//a/text()/parent::a')
         for section_link in section_links:
@@ -69,19 +72,15 @@ def parse_country_profile(response, profile_id, section_link_divs):
 
             section_link_maps[title] = href
 
-    section_content_ids = section_link_maps.values()
-    section_titles = section_link_maps.keys()
+    section_content_ids = list(section_link_maps.values())
+    section_titles = list(section_link_maps.keys())
 
-    section_contents = []
-    for section_content_id in section_content_ids:
-        id = section_content_id.replace('#', '')
+    sections = collections.OrderedDict()
+    for index in range(0, len(section_content_ids)):
+        print(section_content_ids[index])
+        id = section_content_ids[index].replace('#', '')
         section_images = response.xpath(
             f'//div[@id="{id}"]/div/*/descendant-or-self::img/@src').getall()
-        # section_text = remove_empty_list_item(response.xpath(
-        #     f'//div[@id="{id}"]/*/descendant-or-self::*[not(self::iframe)]/text()').getall())
-
-        # section_text = remove_empty_list_item(response.xpath(
-        #     f'//div[@id="{id}"]/*/descendant-or-self::*[not(self::iframe)][not(self::td)][not(self::th)][not(self::li)]/text()').getall())
 
         # Exclude tables and lists
         section_text = remove_empty_list_item(response.xpath(
@@ -103,15 +102,13 @@ def parse_country_profile(response, profile_id, section_link_divs):
         if len(tables) > 0:
             section_text.append({'tables': tables})
 
-        section_contents.append(
-            {'images': section_images, 'content': section_text})
-
-    sections = dict(zip(section_titles, section_contents))
+        sections[section_titles[index]] = {
+            'images': section_images, 'content': section_text}
 
     item = CountryProfileItem()
     item['name'] = response.xpath(
         f'//ul[@id="Tabs"]/li/a[@href="#{profile_id}"]/text()').get().strip()
-    item['content'] = sections
+    item['content'] = json.dumps(sections)
 
     return item
 

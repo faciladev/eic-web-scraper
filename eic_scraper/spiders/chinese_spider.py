@@ -77,7 +77,7 @@ class ChineseSpider(scrapy.Spider):
 
         for item_map in item_maps:
             for inner_item_map in item_map:
-                url = f'http://{self.allowed_domains[0]}/wp-json/wp/v2/{inner_item_map["type"]}s/{inner_item_map["cn_id"]}'
+                url = f'http://{self.allowed_domains[0]}/wp-json/wp/v2/{inner_item_map["type"]}s/{inner_item_map["eng_id"]}'
                 yield scrapy.Request(url=url, callback=inner_item_map['initial_parser'])
 
     def parse_page(self, response):
