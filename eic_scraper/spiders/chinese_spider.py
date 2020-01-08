@@ -1,6 +1,7 @@
 import scrapy
 from scrapy.http import HtmlResponse
 import json
+import collections
 
 from eic_scraper.items import ChinesePageItem
 from eic_scraper.utils import remove_empty_list_item, remove_list_item_by_re
@@ -77,7 +78,7 @@ class ChineseSpider(scrapy.Spider):
 
         for item_map in item_maps:
             for inner_item_map in item_map:
-                url = f'http://{self.allowed_domains[0]}/wp-json/wp/v2/{inner_item_map["type"]}s/{inner_item_map["eng_id"]}'
+                url = f'http://{self.allowed_domains[0]}/wp-json/wp/v2/{inner_item_map["type"]}s/{inner_item_map["cn_id"]}'
                 yield scrapy.Request(url=url, callback=inner_item_map['initial_parser'])
 
     def parse_page(self, response):
@@ -92,7 +93,7 @@ class ChineseSpider(scrapy.Spider):
             section_titles = html_response.xpath('//h2 | //h1')
             following_nodes = section_titles[0].xpath(
                 './/following-sibling::*')
-            content = {}
+            content = collections.OrderedDict()
             for index, section_title in enumerate(section_titles):
                 if section_title.xpath('.//descendant-or-self::*/text()').get() == None:
                     continue
@@ -111,7 +112,7 @@ class ChineseSpider(scrapy.Spider):
                 page['excerpt']['rendered'], 'utf-8'))
             item['excerpt'] = escape_wordpress_vc(
                 excerpt.xpath('//descendant-or-self::*/text()').getall())
-            item['content'] = content
+            item['content'] = json.dumps(content)
             item['image'] = image['link']
             yield item
 
