@@ -74,7 +74,7 @@ class OfficialSiteSpider(scrapy.Spider):
 
     def start_requests(self):
         item_maps = [
-            self.NEWS_EVENT_MAP,
+            # self.NEWS_EVENT_MAP,
             self.INCENTIVE_MAP,
             self.SECTOR_MAP,
             self.ECONOMIC_INDICATOR_MAP
