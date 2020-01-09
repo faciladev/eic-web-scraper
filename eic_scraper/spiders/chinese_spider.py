@@ -4,7 +4,7 @@ import json
 import collections
 
 from eic_scraper.items import ChinesePageItem
-from eic_scraper.utils import remove_empty_list_item, remove_list_item_by_re
+from eic_scraper.utils import remove_empty_list_item, remove_list_item_by_re, extract_lists, extract_tables
 
 
 class ChineseSpider(scrapy.Spider):
@@ -152,37 +152,6 @@ class ChineseSpider(scrapy.Spider):
                 between_nodes.append({'tables': tables})
 
         return between_nodes
-
-
-def extract_lists(section_lists):
-    lists = []
-    for section_list in section_lists:
-        list_content = remove_empty_list_item(
-            section_list.xpath('.//li/descendant-or-self::*/text()').getall())
-        if len(list_content) > 0:
-            lists.append({'list': list_content})
-
-    return lists
-
-
-def extract_tables(section_tables):
-    tables = []
-    for section_table in section_tables:
-        table = {'headers': [], 'rows': []}
-        headers = section_table.xpath('.//th')
-        for header in headers:
-            table['headers'].append(
-                header.xpath('.//descendant-or-self::*/text()').get(default=""))
-
-        rows = section_table.xpath('.//tbody/tr')
-        for row in rows:
-            row_content = remove_empty_list_item(
-                row.xpath('.//td/descendant-or-self::*/text()').getall())
-            table['rows'].append(row_content)
-
-        tables.append({'table': table})
-
-    return tables
 
 
 def escape_wordpress_vc(node_content):

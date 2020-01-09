@@ -499,14 +499,3 @@ def parse_sector_quotes(quotes_container):
             quotes.append(quote)
 
     return quotes
-
-
-def extract_lists(section_lists):
-    lists = []
-    for section_list in section_lists:
-        list_content = remove_empty_list_item(
-            section_list.xpath('.//li/descendant-or-self::*/text()').getall())
-        if len(list_content) > 0:
-            lists.append({'list': list_content})
-
-    return lists

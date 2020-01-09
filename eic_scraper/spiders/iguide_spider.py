@@ -3,7 +3,7 @@ import collections
 import json
 
 from eic_scraper.items import CountryProfileItem
-from eic_scraper.utils import remove_empty_list_item
+from eic_scraper.utils import remove_empty_list_item, extract_tables, extract_lists
 
 
 class IGuideSpider(scrapy.Spider):
@@ -111,34 +111,3 @@ def parse_country_profile(response, profile_id, section_link_divs):
     item['content'] = json.dumps(sections)
 
     return item
-
-
-def extract_lists(section_lists):
-    lists = []
-    for section_list in section_lists:
-        list_content = remove_empty_list_item(
-            section_list.xpath('.//li/descendant-or-self::*/text()').getall())
-        if len(list_content) > 0:
-            lists.append({'list': list_content})
-
-    return lists
-
-
-def extract_tables(section_tables):
-    tables = []
-    for section_table in section_tables:
-        table = {'headers': [], 'rows': []}
-        headers = section_table.xpath('.//th')
-        for header in headers:
-            table['headers'].append(
-                header.xpath('.//descendant-or-self::*/text()').get(default=""))
-
-        rows = section_table.xpath('.//tbody/tr')
-        for row in rows:
-            row_content = remove_empty_list_item(
-                row.xpath('.//td/descendant-or-self::*/text()').getall())
-            table['rows'].append(row_content)
-
-        tables.append({'table': table})
-
-    return tables
