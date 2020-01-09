@@ -8,6 +8,7 @@ class NewsEventItem(scrapy.Item):
     published = scrapy.Field()
     content = scrapy.Field()
 
+
 class IncentiveItem(scrapy.Item):
     name = scrapy.Field()
     description = scrapy.Field()
@@ -19,15 +20,18 @@ class IncentiveItem(scrapy.Item):
     implementing_authority = scrapy.Field()
     incentive_package = scrapy.Field()
 
+
 class SectorItem(scrapy.Item):
     name = scrapy.Field()
     image = scrapy.Field()
     url = scrapy.Field()
     content = scrapy.Field()
 
+
 class CountryProfileItem(scrapy.Item):
     name = scrapy.Field()
     content = scrapy.Field()
+
 
 class ServiceItem(scrapy.Item):
     ServiceId = scrapy.Field()

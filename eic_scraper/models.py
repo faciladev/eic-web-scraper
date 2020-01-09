@@ -31,6 +31,7 @@ class NewsEventModel(DeclarativeBase):
     content = Column('content', ARRAY(Text))
     published = Column('published', DateTime)
 
+
 class IncentiveModel(DeclarativeBase):
     __tablename__ = "incentives"
 
@@ -41,9 +42,12 @@ class IncentiveModel(DeclarativeBase):
     law_section = Column('law_section', ARRAY(String), nullable=True)
     sector = Column('sector', ARRAY(String), nullable=True)
     eligebility = Column('eligebility', ARRAY(String), nullable=True)
-    rewarding_authority = Column('rewarding_authority', ARRAY(String), nullable=True)
-    implementing_authority = Column('implementing_authority', ARRAY(String), nullable=True)
+    rewarding_authority = Column(
+        'rewarding_authority', ARRAY(String), nullable=True)
+    implementing_authority = Column(
+        'implementing_authority', ARRAY(String), nullable=True)
     incentive_package = Column('incentive_package', String)
+
 
 class SectorModel(DeclarativeBase):
     __tablename__ = "sectors"
@@ -54,6 +58,7 @@ class SectorModel(DeclarativeBase):
     url = Column('url', String)
     content = Column('content', JSONB)
 
+
 class CountryProfileModel(DeclarativeBase):
     __tablename__ = "country_profiles"
 
@@ -61,7 +66,8 @@ class CountryProfileModel(DeclarativeBase):
     name = Column('name', String)
     content = Column('content', JSONB)
 
-class ServiceModel(DeclarativeBase): 
+
+class ServiceModel(DeclarativeBase):
     __tablename__ = "services"
 
     id = Column(Integer, primary_key=True)
@@ -72,6 +78,7 @@ class ServiceModel(DeclarativeBase):
     DisplayNameEnglish = Column('DisplayNameEnglish', String)
     Abbreviation = Column('Abbreviation', String)
     Requirements = Column('Requirements', JSONB, nullable=True)
+
 
 class ChinesePageModel(DeclarativeBase):
     __tablename__ = "chinese_page"
