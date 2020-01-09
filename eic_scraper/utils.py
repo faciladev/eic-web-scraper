@@ -12,13 +12,15 @@ def remove_list_item_by_re(regexp, string_list):
 def extract_lists(section_lists):
     lists = []
     for section_list in section_lists:
-        list_content = remove_empty_list_item(
-            section_list.xpath('.//li/descendant-or-self::*/text()').getall())
+        lis = section_list.xpath('.//li')
+        single_list = []
+        for li in lis:
+            list_content = remove_empty_list_item(
+                li.xpath('.//descendant-or-self::*/text()').getall())
+            single_list.append(" ".join(list_content))
 
-        list_content = " ".join(list_content)
-
-        if len(list_content) > 0:
-            lists.append({'list': list_content})
+        if len(single_list) > 0:
+            lists.append({'list': single_list})
 
     return lists
 
