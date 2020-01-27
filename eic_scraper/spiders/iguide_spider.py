@@ -77,7 +77,7 @@ def parse_country_profile(response, profile_id, section_link_divs):
 
     sections = collections.OrderedDict()
     for index in range(0, len(section_content_ids)):
-        print(section_content_ids[index])
+        # print(section_content_ids[index])
         id = section_content_ids[index].replace('#', '')
         section_images = response.xpath(
             f'//div[@id="{id}"]/div/*/descendant-or-self::img/@src').getall()

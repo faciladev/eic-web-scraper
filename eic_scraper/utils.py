@@ -35,6 +35,12 @@ def extract_tables(section_tables):
                 header.xpath('.//descendant-or-self::*/text()').get(default=""))
 
         rows = section_table.xpath('.//tbody/tr')
+
+        # Check if rows are outside tbody element
+        if len(rows) <= 0:
+            rows = section_table.xpath(
+                'set:difference(.//tr, .//tr[descendant::th])')
+
         for row in rows:
             row_content = remove_empty_list_item(
                 row.xpath('.//td/descendant-or-self::*/text()').getall())
