@@ -105,4 +105,4 @@ DATABASE = {
 }
 
 SPLASH_URL = os.getenv('SPLASH_URL')
-LOG_LEVEL = 'INFO'
+# LOG_LEVEL = 'INFO'

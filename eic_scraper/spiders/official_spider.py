@@ -74,12 +74,13 @@ class OfficialSiteSpider(scrapy.Spider):
 
     def start_requests(self):
         item_maps = [
-            # self.NEWS_EVENT_MAP,
-            self.INCENTIVE_MAP,
-            self.SECTOR_MAP,
-            self.ECONOMIC_INDICATOR_MAP
+            self.NEWS_EVENT_MAP,
+            # self.INCENTIVE_MAP,
+            # self.SECTOR_MAP,
+            # self.ECONOMIC_INDICATOR_MAP
         ]
         for item_map in item_maps:
+            # splash_arg = {'timeout': 90, 'wait': 0.5}
             if type(item_map) is list:
                 for inner_item_map in item_map:
                     yield SplashRequest(url=inner_item_map['url'], callback=inner_item_map['initial_parser'])

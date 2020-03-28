@@ -109,5 +109,6 @@ def parse_country_profile(response, profile_id, section_link_divs):
     item['name'] = response.xpath(
         f'//ul[@id="Tabs"]/li/a[@href="#{profile_id}"]/text()').get().strip()
     item['content'] = json.dumps(sections)
+    # item['content'] = sections
 
     return item
