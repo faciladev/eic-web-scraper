@@ -28,7 +28,7 @@ class NewsEventModel(DeclarativeBase):
     image = Column('image', String, nullable=True)
     title = Column('title', String)
     url = Column('url', String)
-    content = Column('content', ARRAY(Text))
+    content = Column('content', JSONB)
     published = Column('published', DateTime)
 
 

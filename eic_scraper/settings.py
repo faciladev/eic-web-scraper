@@ -15,14 +15,13 @@ load_dotenv()
 BOT_NAME = 'eic_scraper'
 
 SPIDER_MODULES = ['eic_scraper.spiders']
-NEWSPIDER_MODULE = 'eic_scraper.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'eic_scraper (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = True
+# ROBOTSTXT_OBEY = True
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32

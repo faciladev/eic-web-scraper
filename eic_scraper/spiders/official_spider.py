@@ -15,7 +15,7 @@ class OfficialSiteSpider(scrapy.Spider):
         super().__init__(*args, **kwargs)
 
         self.NEWS_EVENT_MAP = {
-            'url': 'http://www.investethiopia.gov.et/index.php/information-center/news-and-events.html',
+            'url': 'http://www.investethiopia.gov.et/index.php/news-resources/news-and-events.html',
             'initial_parser': self.parse_news_event_listing
         }
 
@@ -75,17 +75,17 @@ class OfficialSiteSpider(scrapy.Spider):
     def start_requests(self):
         item_maps = [
             self.NEWS_EVENT_MAP,
-            # self.INCENTIVE_MAP,
-            # self.SECTOR_MAP,
-            # self.ECONOMIC_INDICATOR_MAP
+            self.INCENTIVE_MAP,
+            self.SECTOR_MAP,
+            self.ECONOMIC_INDICATOR_MAP
         ]
         for item_map in item_maps:
-            # splash_arg = {'timeout': 90, 'wait': 0.5}
+            splash_arg = {'max': 90}
             if type(item_map) is list:
                 for inner_item_map in item_map:
                     yield SplashRequest(url=inner_item_map['url'], callback=inner_item_map['initial_parser'])
             else:
-                yield SplashRequest(url=item_map['url'], callback=item_map['initial_parser'])
+                yield SplashRequest(url=item_map['url'], callback=item_map['initial_parser'], args=splash_arg)
 
     def parse_news_event_listing(self, response):
         items = response.css('.article-intro')
@@ -100,7 +100,8 @@ class OfficialSiteSpider(scrapy.Spider):
     def parse_news_event_detail(self, response):
         item = response.xpath('//article')
 
-        image = item.xpath('.//img/@src').get()
+        image = 'http://www.investethiopia.gov.et' + \
+            item.xpath('.//img/@src').get()
         title = item.css('.article-title::text').get().strip()
         url = response.url
         published = item.xpath(
